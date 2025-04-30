@@ -2,23 +2,17 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
-use CodeIgniter\HTTP\ResponseInterface;
+use CodeIgniter\Controller;
 
-class AuthController extends BaseController
+class AuthController extends Controller
 {
-    function __construct()
-    {
-        helper('form');
-    }
-
     public function login()
     {
         if ($this->request->getPost()) {
             $username = $this->request->getVar('username');
             $password = $this->request->getVar('password');
 
-            $dataUser = ['username' => 'Hilmi', 'password' => '827ccb0eea8a706c4c34a16891f84e7b', 'role' => 'admin']; // passw 12345
+            $dataUser = ['username' => 'Hilmi', 'password' => '827ccb0eea8a706c4c34a16891f84e7b', 'role' => 'admin']; // password 12345
 
             if ($username == $dataUser['username']) {
                 if (md5($password) == $dataUser['password']) {
@@ -27,8 +21,7 @@ class AuthController extends BaseController
                         'role' => $dataUser['role'],
                         'isLoggedIn' => TRUE
                     ]);
-
-                    return redirect()->to(base_url('/'));
+                    return redirect()->to(session()->get('role') == 'admin' ? '/admin' : '/user');
                 } else {
                     session()->setFlashdata('failed', 'Username & Password Salah');
                     return redirect()->back();
